@@ -27,7 +27,11 @@ export class PostgresStorage implements IStorage {
   }
 
   async getCalculations(): Promise<Calculation[]> {
-    return await db.select().from(calculations).orderBy(desc(calculations.createdAt));
+    // Limit to last 3 calculations
+    return await db.select()
+      .from(calculations)
+      .orderBy(desc(calculations.createdAt))
+      .limit(3);
   }
 }
 
