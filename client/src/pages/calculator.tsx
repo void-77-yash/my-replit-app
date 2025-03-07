@@ -96,6 +96,7 @@ export default function Calculator() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Calculator Card */}
         <Card className="shadow-xl bg-white/90 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-center text-amber-600">
@@ -179,6 +180,7 @@ export default function Calculator() {
           </CardContent>
         </Card>
 
+        {/* History Card */}
         <Card className="shadow-xl bg-white/90 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-amber-600">
@@ -190,9 +192,9 @@ export default function Calculator() {
               {calculations?.map((calc) => (
                 <div key={calc.id} className="p-4 border rounded-lg">
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <p>Weight: {calc.netWeight}g</p>
+                    <p>Weight: {Number(calc.netWeight).toFixed(2)}g</p>
                     <p>Rate: ₹{formatIndianCurrency(Number(calc.goldRate))}</p>
-                    <p>Making: {calc.makingCharges}%</p>
+                    <p>Making: {Number(calc.makingCharges).toFixed(2)}%</p>
                     <p>GST: ₹{formatIndianCurrency(Number(calc.gstAmount))}</p>
                   </div>
                   <p className="mt-2 text-lg font-semibold text-amber-600">
