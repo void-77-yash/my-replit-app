@@ -80,6 +80,7 @@ export default function Calculator() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="24">24 Carat</SelectItem>
+                          <SelectItem value="23">23 Carat</SelectItem>
                           <SelectItem value="22">22 Carat</SelectItem>
                         </SelectContent>
                       </Select>
