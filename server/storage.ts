@@ -1,10 +1,9 @@
 import { pgTable } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { Pool } from "@neondatabase/serverless";
+import { eq, desc } from "drizzle-orm";
 import { calculations, users, type User, type InsertUser, type Calculation, type InsertCalculation } from "@shared/schema";
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle(pool);
+import { db } from "./db";
 
 // modify the interface with any CRUD methods
 // you might need
