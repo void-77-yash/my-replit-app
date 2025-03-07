@@ -44,7 +44,14 @@ export default function Calculator() {
 
   // Mutation for saving calculations
   const saveCalculation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: {
+      netWeight: number;
+      goldRate: number;
+      makingCharges: number;
+      makingAmount: number;
+      gstAmount: number;
+      totalAmount: number;
+    }) => {
       await apiRequest("POST", "/api/calculations", data);
     },
     onSuccess: () => {
@@ -65,14 +72,14 @@ export default function Calculator() {
       totalAmount
     });
 
-    // Save calculation to history
+    // Save calculation to history with explicitly typed numeric values
     await saveCalculation.mutateAsync({
-      netWeight: values.netWeight,
-      goldRate: values.goldRate,
-      makingCharges: values.makingCharges,
-      makingAmount,
-      gstAmount,
-      totalAmount
+      netWeight: Number(values.netWeight),
+      goldRate: Number(values.goldRate),
+      makingCharges: Number(values.makingCharges),
+      makingAmount: Number(makingAmount),
+      gstAmount: Number(gstAmount),
+      totalAmount: Number(totalAmount)
     });
   }
 

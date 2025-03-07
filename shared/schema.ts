@@ -24,9 +24,14 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export const insertCalculationSchema = createInsertSchema(calculations).omit({
-  id: true,
-  createdAt: true,
+// Update the calculation schema to handle numeric values properly
+export const insertCalculationSchema = z.object({
+  netWeight: z.number(),
+  goldRate: z.number(),
+  makingCharges: z.number(),
+  makingAmount: z.number(),
+  gstAmount: z.number(),
+  totalAmount: z.number(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCalculationSchema } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
+import { ZodError } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Calculation routes
@@ -12,7 +13,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await storage.saveCalculation(calculation);
       res.json(result);
     } catch (error) {
-      res.status(400).json({ error: "Invalid calculation data" });
+      console.error("Calculation validation error:", error);
+      if (error instanceof ZodError) {
+        res.status(400).json({ 
+          error: "Invalid calculation data",
+          details: error.errors 
+        });
+      } else {
+        res.status(400).json({ error: "Invalid calculation data" });
+      }
     }
   });
 
@@ -21,6 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const calculations = await storage.getCalculations();
       res.json(calculations);
     } catch (error) {
+      console.error("Error fetching calculations:", error);
       res.status(500).json({ error: "Failed to fetch calculations" });
     }
   });
