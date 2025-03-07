@@ -1,0 +1,158 @@
+
+from tkinter import *
+from tkinter import messagebox
+COLOR = "#220016"
+
+
+from PIL import Image, ImageTk
+
+def calculator():
+    gold_rate_ = carat_rate.get()
+    making_charges = making_entry.get()
+    net_weight = gross_wt_entry.get()
+    #other_weight = other_wt_entry.get()
+
+    if len(net_weight) == 0 or len(making_charges) == 0:
+            messagebox.showinfo(title="Oops", message="Please fill all fields")
+    else:
+        try:
+            rate = float(net_weight) * float(gold_rate_)
+            n = rate * float(making_charges)/100
+            #print(n)
+            result = (rate + n)
+            n_rounded = int(n)
+
+            def format_indian_number(number_m):
+                num_str = str(number_m)[::-1]
+                parts = [num_str[:3]]
+                num_str = num_str[3:]
+                while num_str:
+                    parts.append(num_str[:2])
+                    num_str = num_str[2:]
+                return ','.join(parts)[::-1]
+
+            number_m = n_rounded
+            formatted_number_m = format_indian_number(number_m)
+            making_result.config(text=f"Making Amt: {formatted_number_m}")
+            #print(result)
+            gst_a = result * 0.03
+            gst_amt = (gst_a + result)
+            #print(gst_amt)
+            gst_amt_rounded = int(gst_a)
+            def format_indian_number(number_g):
+                num_str = str(number_g)[::-1]
+                parts = [num_str[:3]]
+                num_str = num_str[3:]
+                while num_str:
+                    parts.append(num_str[:2])
+                    num_str = num_str[2:]
+                return ','.join(parts)[::-1]
+
+            number_g = gst_amt_rounded
+            formatted_number_g = format_indian_number(number_g)
+            gst_result.config(text=f"GST Amt :  {formatted_number_g}")
+            final_rate = gst_amt + 200
+            final_rate_rounded = int(final_rate)
+
+            def format_indian_number(number):
+                num_str = str(number)[::-1]
+                parts = [num_str[:3]]
+                num_str = num_str[3:]
+                while num_str:
+                    parts.append(num_str[:2])
+                    num_str = num_str[2:]
+                return ','.join(parts)[::-1]
+
+            number = final_rate_rounded
+            formatted_number = format_indian_number(number)
+            calculate_button_entry.config(text=f"Total : ₹{formatted_number}")
+        except ValueError:
+            messagebox.showinfo(title="Oops", message="Please fill all fields")
+
+def refresh():
+    gross_wt_entry.delete(0, END)
+    #making_entry.delete(0, END)
+    #other_wt_entry.delete(0, END)
+    making_result.config(text="")
+    gst_result.config(text="")
+    #net_weight_price.config(text="")
+    calculate_button_entry.config(text="")
+
+
+
+window = Tk()
+window.title("Smart Rate Calculator")
+window.geometry("612x365")
+image = Image.open("goldback.png")  # Replace with your image path
+background_image = ImageTk.PhotoImage(image)
+#window.config(padx=30, pady=30,bg="white")
+
+
+
+
+
+
+#---------------text/images-----------------
+background_label = Label(window, image=background_image)
+background_label.place(relwidth=1, relheight=1)
+
+#gold_rate_label = Label(window,text="Gold Rate",font=("lato",25), fg="white",bg=COLOR,highlightthickness=0)
+#gold_rate_label.place(x=240, y=50)
+gross_wt = Label(window,text="Net weight :",font=("Montserrat",17), fg="white",bg=COLOR,highlightthickness=0)
+gross_wt.place(x=55, y=160)
+#other_wt = Label(text="Other wt :",font=("montserrat",17), fg="white",bg=COLOR,highlightthickness=0)
+#other_wt.place(x=55 , y=200 )
+making = Label(text="Making Charges :",font=("montserrat",17), fg="white",bg=COLOR,highlightthickness=0)
+making.place(x=15 , y=220 )
+making_per = Label(text="%",font=("montserrat",17), fg="white",bg=COLOR,highlightthickness=0)
+making_per.place(x=233 , y=222 )
+gst = Label(text="GST 3%",font=("montserrat",13), fg="white",bg=COLOR,highlightthickness=0)
+gst.place(x=455 , y=190 )
+rate_label = Label(text="Rate :",bg=COLOR,fg="white",font=("montserrat",14),highlightthickness=0)
+rate_label.place(x=239 , y=120)
+#net_label = Label(text="Net wt :",bg=COLOR,fg="white",font=("montserrat",14),highlightthickness=0)
+#net_label.place(x=455 , y=160)
+#--------------buttons----------
+gold_rate = Spinbox(from_=22, to=24, width=5,bg=COLOR,fg="white",highlightthickness=0)
+gold_rate.place(x=290 , y=90 )
+
+
+#-----------Entries/label-------
+carat_24 = Label(text='Carat',bg=COLOR,fg="white",font=("montserrat",14),highlightthickness=0)
+carat_24.place(x=239 , y=90 )
+#carat_23 = Label(text='23 Carat',bg="black",fg="white",font=("Lato",14),highlightthickness=0)
+#carat_23.place(x=200 , y=130 )
+#carat_22 = Label(text='22 Carat',bg="black",fg="white",font=("Lato",14),highlightthickness=0)
+#carat_22.place(x=200 , y=160 )
+gst_result = Label(width=18,bg=COLOR,fg="white",font=("montserrat",12))
+gst_result.place(x=435 , y=225 )
+making_result = Label(width=20,bg=COLOR,fg="white",font=("montserrat",12))
+making_result.place(x=434 , y=260 )
+#net_weight_price = Label(width=10,bg=COLOR,fg="white",font=("montserrat",12))
+#net_weight_price.place(x=510 , y=160 )
+
+
+
+#carat_24 = Entry(width=10,bg="white",fg="black",highlightthickness=0,insertbackground="black")
+#carat_24.place(x=270 , y=100 )
+carat_rate = Entry(width=10,bg="white",fg="black",highlightthickness=0,insertbackground="black")
+carat_rate.place(x=285 , y=125 )
+#carat_22 = Entry(width=10,bg="white",fg="black",highlightthickness=0,insertbackground="black")
+#carat_22.place(x=270 , y=160 )
+gross_wt_entry = Entry(width=7,bg="white",fg="black",highlightthickness=0,insertbackground="black")
+gross_wt_entry.place(x=160, y=165)
+#other_wt_entry = Entry(width=7,bg="white",fg="black",highlightthickness=0,insertbackground="black")
+#other_wt_entry.place(x=160, y=205)
+making_entry = Entry(width=7,bg="white",highlightthickness=0,insertbackground="black",fg="black")
+making_entry.place(x=160, y=225)
+making_entry.focus()
+
+calculate_button = Button(text="Calculate",width=10,bg=COLOR,fg="black",highlightbackground=COLOR,highlightcolor= "black",highlightthickness=1,command=calculator)
+calculate_button.place(x=260, y=275)
+calculate_button_entry = Label(width=17,bg=COLOR,fg="white",highlightthickness=0,highlightbackground="black",highlightcolor="black",font=("Lato",18))
+calculate_button_entry.place(x=220, y=315)
+refresh_button = Button(text="⟳", width=2,bg=COLOR,highlightbackground=COLOR,highlightcolor= "black",highlightthickness=1,command=refresh)
+refresh_button.place(x=500, y=320)
+
+
+window.mainloop()
