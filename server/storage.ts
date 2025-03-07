@@ -1,39 +1,47 @@
-import { users, type User, type InsertUser } from "@shared/schema";
+import { pgTable } from "drizzle-orm/pg-core";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+import { calculations, users, type User, type InsertUser, type Calculation, type InsertCalculation } from "@shared/schema";
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle(pool);
 
 // modify the interface with any CRUD methods
 // you might need
-
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+
+  // New methods for calculations
+  saveCalculation(calculation: InsertCalculation): Promise<Calculation>;
+  getCalculations(): Promise<Calculation[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  currentId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.currentId = 1;
-  }
-
+export class PostgresStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+    const result = await db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  async saveCalculation(calculation: InsertCalculation): Promise<Calculation> {
+    const result = await db.insert(calculations).values(calculation).returning();
+    return result[0];
+  }
+
+  async getCalculations(): Promise<Calculation[]> {
+    return await db.select().from(calculations).orderBy(desc(calculations.createdAt));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new PostgresStorage();
