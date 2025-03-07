@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RefreshCcw } from "lucide-react";
 import { formatIndianCurrency } from "@/lib/utils/format";
 import { calculateTotalAmount } from "@/lib/utils/calculations";
@@ -15,7 +14,6 @@ const formSchema = z.object({
   netWeight: z.string().min(1, "Net weight is required").transform(Number),
   goldRate: z.string().min(1, "Gold rate is required").transform(Number),
   makingCharges: z.string().min(1, "Making charges are required").transform(Number),
-  caratType: z.string()
 });
 
 export default function Calculator() {
@@ -31,7 +29,6 @@ export default function Calculator() {
       netWeight: "",
       goldRate: "",
       makingCharges: "",
-      caratType: "24"
     }
   });
 
@@ -50,7 +47,12 @@ export default function Calculator() {
   }
 
   function resetForm() {
-    form.reset();
+    const currentValues = form.getValues();
+    form.reset({
+      netWeight: "",
+      goldRate: currentValues.goldRate,
+      makingCharges: currentValues.makingCharges
+    });
     setResults(null);
   }
 
@@ -65,44 +67,19 @@ export default function Calculator() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="caratType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Carat Type</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select carat" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="24">24 Carat</SelectItem>
-                          <SelectItem value="23">23 Carat</SelectItem>
-                          <SelectItem value="22">22 Carat</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="goldRate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Gold Rate (₹)</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="Enter rate" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="goldRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gold Rate (₹)</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="Enter rate" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}
