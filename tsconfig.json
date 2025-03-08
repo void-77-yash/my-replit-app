@@ -21,3 +21,11 @@
     }
   }
 }
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./server",
+    "module": "CommonJS",
+    "target": "ES6"
+  }
+}
